@@ -1,0 +1,65 @@
+// @ts-nocheck
+/* eslint-disable */
+
+import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
+
+import envConfig from '@/config/env-config';
+import { Server{{objectName}}CondsPageResponse } from '@/contract/{{name}}/{{fileName}}.contract';
+import { definePage } from '@/lib/infra/page';
+import { createServerQueryClient } from '@/server/hydration/server-query-client';
+import { condsPage } from '@/server/service/eda/{{fileName}}.service';
+import { Maybe } from '@/server/types/index.types';
+
+import {{objectName}}Client from './{{fileName}}.client';
+import { {{objectName}}QueryKey } from './{{fileName}}.query-key';
+
+const title = '{{title}}';
+
+async function Page() {
+  /**
+   * 创建服务端 QueryClient
+   */
+  const queryClient = createServerQueryClient();
+
+  const params = {
+    current: envConfig.NEXT_PUBLIC_PAGE_CURRENT,
+    pageSize: envConfig.NEXT_PUBLIC_PAGE_SIZE,
+  };
+  /**
+   * SSR 阶段预加载第一页数据
+   *
+   * 数据会进入 React Query 缓存
+   */
+  await queryClient.prefetchQuery({
+    queryKey: {{objectName}}QueryKey.page(params),
+
+    queryFn: async (): Promise<Maybe<Server{{objectName}}CondsPageResponse>> => {
+      const result = await condsPage({
+        current: envConfig.NEXT_PUBLIC_PAGE_CURRENT,
+        pageSize: envConfig.NEXT_PUBLIC_PAGE_SIZE,
+      });
+      return {
+        status: 200,
+        body: result,
+      };
+    },
+  });
+
+  // #region server data inject
+
+  // #endregion
+
+  return (
+    /**
+     * 把服务端缓存“脱水”传给客户端
+     */
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <{{objectName}}Client />
+    </HydrationBoundary>
+  );
+}
+export default definePage(Page);
+
+export const metadata = {
+  title,
+};
