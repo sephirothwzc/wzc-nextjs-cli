@@ -4,7 +4,7 @@
   "type": "module",
   "packageManager": "yarn@4.12.0",
   "bin": {
-    "wzc": "./bin/wzc.js"
+    "wzc-cli": "./dist/bin/wzc.js"
   },
   "scripts": {
     "dev": "tsx src/index.ts",
