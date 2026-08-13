@@ -1,0 +1,22 @@
+/**
+ * @ Author: zhanchao.wu
+ * @ Create Time: {{now}}
+ * @ Modified by: zhanchao.wu
+ * @ Modified time: 2026-08-13 14:08:52
+ * @ Description: {{title}}
+ */
+
+import { definePage } from '@/lib/infra/page';
+
+import ItemClient from '../_component/item.client';
+
+const title = '新建{{title}}';
+
+async function Page() {
+  return <ItemClient title={title} clientViewType="create" />;
+}
+export default definePage(Page);
+
+export const metadata = {
+  title,
+};

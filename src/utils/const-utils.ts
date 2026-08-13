@@ -2,7 +2,7 @@
  * @ Author: zhanchao.wu
  * @ Create Time: 2026-08-11 22:10:07
  * @ Modified by: zhanchao.wu
- * @ Modified time: 2026-08-12 18:11:17
+ * @ Modified time: 2026-08-13 13:59:01
  * @ Description:
  */
 
@@ -57,5 +57,6 @@ export const nameToProp = (name: string, title: string): NameProp => {
     constName: camelCase(fileName),
     title,
     pathParts,
+    now: new Date().toISOString().replace('T', ' ').slice(0, 19),
   };
 };

@@ -1,0 +1,92 @@
+/**
+ * @ Author: zhanchao.wu
+ * @ Create Time: {{now}}
+ * @ Modified by: zhanchao.wu
+ * @ Modified time: 2026-08-13 15:39:31
+ * @ Description: {{title}}
+ */
+
+'use client';
+
+import {
+  ProCard,
+  ProForm,
+  ProFormDependency,
+  ProFormGroup,
+  ProFormList,
+  ProFormSelect,
+  ProFormSwitch,
+  ProFormText,
+} from '@ant-design/pro-components';
+import { Form } from 'antd';
+import { get } from 'es-toolkit/compat';
+import { useEffect } from 'react';
+
+import {
+  Client{{objectName}}SaveRecordBody
+} from '@/contract/{{name}}/{{fileName}}.contract';
+import { useFormTableBridge } from '@/lib/page-bridge/use-page-bridge';
+import { apiClient } from '@/lib/provider/api-client';
+import { DefaultItemProp } from '@/server/types/index.types';
+import {
+  defaultProForm,
+  defaultProFormItemLayout,
+  multipleColumnsLayout,
+  proFormItemLayout,
+  proFormItemLayout4,
+} from '@/util/antd-util';
+
+/**
+ * 新增编辑
+ */
+export default function ItemView(prop: DefaultItemProp<Client {{objectName}}SaveRecordBody>) {
+  // #region useState
+  const { mutateAsync, isPending } = apiClient.{{objectName}}.saveRecordSub.useMutation();
+
+  const { form, formRef, message, closeAndRefresh } =
+    useFormTableBridge<Client {{objectName}}SaveRecordBody>(prop.title);
+
+  // #endregion
+
+  // #region useEffect
+
+  // #endregion
+
+  // #region handle
+
+  async function handleFinish(
+    formData: Client {{objectName}}SaveRecordBody,
+  ): Promise<boolean | void> {
+    const result = await mutateAsync({
+      body: formData,
+    });
+    if (result.body?.id) {
+      message.success('提交成功！');
+      closeAndRefresh();
+    }
+  }
+
+  // #endregion
+
+  // #region React Element
+  return (
+    <ProForm<Client {{objectName}}SaveRecordBody>
+      form={form}
+      formRef={formRef}
+      name="conf-form-item"
+      {...defaultProForm({ ...multipleColumnsLayout })}
+      onFinish={handleFinish}
+      loading={isPending}
+      initialValues={prop?.initialValues?.item}
+      disabled={prop.clientViewType === 'view'}
+    >
+      {/* 隐藏 ID 字段 */}
+      <ProFormText name="id" hidden />
+    </ProForm>
+  );
+  // #endregion
+
+  // #region computed
+
+  // #endregion
+}

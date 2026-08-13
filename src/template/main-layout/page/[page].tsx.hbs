@@ -1,0 +1,170 @@
+/**
+ * @ Author: zhanchao.wu
+ * @ Create Time: {{now}}
+ * @ Modified by: zhanchao.wu
+ * @ Modified time: {{now}}
+ * @ Description: {{title}}
+ */
+
+'use client';
+
+import { PlusOutlined } from '@ant-design/icons';
+import { ProColumns, ProTable } from '@ant-design/pro-components';
+import { Button, theme } from 'antd';
+import { usePathname } from 'next/navigation';
+import { useMemo } from 'react';
+import { useImmer } from 'use-immer';
+
+import { ClientCondsPageRecord } from '@/contract/{{name}}/{{fileName}}.contract';
+import { useCondsPageTable } from '@/lib/page-bridge/use-page-listener';
+import { apiClient } from '@/lib/provider/api-client';
+import { TableCondsParams } from '@/server/types/index.types';
+import { useStore } from '@/store/root-store';
+import { columnDateTimeRange } from '@/util/antd-util';
+import { PATH_QUERY_KEY } from '@/util/string-const';
+import { requestParamsCondsPage, useSearchTable } from '@/util/use-search-table-option';
+
+import { {{objectName}}QueryKey } from './{{fileName}}.query-key';
+
+/**
+ * {{title}}管理
+ * @returns
+ */
+export default function {{objectName}}View() {
+  // #region useState
+  const { pageId, tableRef, queryClient } = useCondsPageTable();
+  const { token } = theme.useToken();
+  const userSetting = useStore((store) => store.userSetting);
+  const [tableParams, setTableParams] = useImmer<TableCondsParams<ClientCondsPageRecord>>({
+    current: 1,
+    pageSize: userSetting.pageSize,
+  });
+
+  const rawColumns = useMemo(
+    (): ProColumns<ClientCondsPageRecord>[] => [
+      {
+        dataIndex: 'index',
+        valueType: 'index',
+        width: 48,
+        search: false,
+      },
+      
+      {
+        title: '最后修改日期',
+        dataIndex: 'updatedAt',
+        sorter: true,
+        ...columnDateTimeRange('updatedAt'),
+      },
+      {
+        title: '操作',
+        valueType: 'option',
+        key: 'option',
+        render: (text, record, _, _action) => [
+          <Button
+            key="viewLink"
+            href={`./{{fileName}}/detail/${record.id}?${PATH_QUERY_KEY.SOURCEPAGE_ID}=${pageId}`}
+            target="_blank"
+            type="link"
+          >
+            查看
+          </Button>,
+          <Button
+            key="editLink"
+            href={`./{{fileName}}/item/${record.id}?${PATH_QUERY_KEY.SOURCEPAGE_ID}=${pageId}`}
+            target="_blank"
+            type="link"
+          >
+            编辑
+          </Button>,
+        ],
+      },
+    ],
+    [pageId],
+  );
+
+  const pathname = usePathname();
+
+  const { columns, optionsProps } = useSearchTable({
+    pageKey: pathname,
+    columns: rawColumns,
+    defaultSearchColumns: ['bizName', 'codeExpression'],
+    autoWidth: false,
+    toolBar: {
+      actions: [
+        <Button
+          key="button"
+          icon={<PlusOutlined />}
+          href={`./{{fileName}}/item?${PATH_QUERY_KEY.SOURCEPAGE_ID}=${pageId}`}
+          target="_blank"
+          type="primary"
+        >
+          新建
+        </Button>,
+      ],
+    },
+  });
+
+  // #endregion
+
+  // #region useEffect
+
+  // #endregion
+
+  // #region handle
+
+  // #endregion
+
+  return (
+    <div
+      style={
+        {
+        height: '100%',
+        overflow: 'auto',
+        borderRadius: token.borderRadius,
+      }
+      }
+    >
+      <ProTable<ClientCondsPageRecord>
+        onLoad={(_dataSource) => {
+          queryClient.invalidateQueries({
+            queryKey:  {{objectName}}QueryKey.page(tableParams),
+          });
+        }}
+        request={async (params, sort, filter) => {
+          const queryParams = requestParamsCondsPage<ClientCondsPageRecord>(params, sort, filter);
+
+          setTableParams(() => queryParams);
+          const result = await queryClient.fetchQuery({
+            queryKey:  {{objectName}}QueryKey.page(tableParams),
+
+            queryFn: async () => {
+              return await apiClient. {{objectName}}.condsPage.query({
+                query: queryParams,
+              });
+            },
+          });
+
+          if (result.status !== 200) {
+            throw new Error('查询失败');
+          }
+
+          return {
+            data: result.body?.records ?? [],
+            success: true,
+            total: result.body?.total ?? 0,
+          };
+        }}
+        actionRef={tableRef}
+        columns={columns}
+        rowKey="id"
+        headerTitle="{{title}}管理"
+        pagination={
+          {
+          defaultPageSize: userSetting.pageSize,
+        }
+        }
+        {...optionsProps}
+      />
+    </div>
+  );
+}

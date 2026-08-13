@@ -1,0 +1,21 @@
+/**
+ * @ Author: zhanchao.wu
+ * @ Create Time: {{now}}
+ * @ Modified by: zhanchao.wu
+ * @ Modified time: {{now}}
+ * @ Description: {{title}}
+ */
+
+import { Maybe, TableCondsParams } from '@/server/types/index.types';
+
+export const {{objectName}}QueryKey = {
+  /**
+   * 根 key
+   */
+  all: ['{{fileName}}'] as const,
+
+  /**
+   * 分页 + 首页
+   */
+  page: <T>(query: Maybe<TableCondsParams<T>>) => [...{{objectName}}QueryKey.all, query] as const,
+};

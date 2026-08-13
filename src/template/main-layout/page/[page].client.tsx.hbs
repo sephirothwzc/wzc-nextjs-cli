@@ -1,0 +1,19 @@
+/**
+ * @ Author: zhanchao.wu
+ * @ Create Time: {{now}}
+ * @ Modified by: zhanchao.wu
+ * @ Modified time: {{now}}
+ * @ Description: {{title}}
+ */
+
+'use client';
+
+import dynamic from 'next/dynamic';
+
+const {{objectName}}View = dynamic(() => import('./{{fileName}}'), {
+  ssr: false,
+});
+
+export default function {{objectName}}Client() {
+  return <{{objectName}}View />;
+}

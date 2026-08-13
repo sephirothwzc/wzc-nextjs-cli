@@ -1,0 +1,22 @@
+/**
+ * @ Author: zhanchao.wu
+ * @ Create Time: {{now}}
+ * @ Modified by: zhanchao.wu
+ * @ Modified time: 2026-08-13 15:46:37
+ * @ Description: {{title}}
+ */
+
+'use client';
+
+import dynamic from 'next/dynamic';
+
+import { Client{{objectName}}SaveRecordBody } from '@/contract/{{name}}/{{fileName}}.contract';
+import { DefaultItemProp } from '@/server/types/index.types';
+
+const ItemView = dynamic(() => import('./item'), {
+  ssr: false,
+});
+
+export default function ItemClient(prop: DefaultItemProp<Client{{objectName}}SaveRecordSubBody>) {
+  return <ItemView {...prop} />;
+}

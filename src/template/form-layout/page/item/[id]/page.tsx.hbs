@@ -1,0 +1,51 @@
+/**
+ * @ Author: zhanchao.wu
+ * @ Create Time: {{now}}
+ * @ Modified by: zhanchao.wu
+ * @ Modified time: 2026-08-13 14:18:11
+ * @ Description: {{title}}
+ */
+
+import { definePage } from '@/lib/infra/page';
+import { getRecordSubById } from '@/server/service/{{name}}.service';
+
+import ItemClient from '../../_component/item.client';
+
+const title = '编辑{{title}}';
+
+// 定义 params 的类型 path 参数获取
+interface PageProps {
+  params: Promise<{ id: string }>;
+}
+
+async function Page(prop: PageProps) {
+  // 必须 await 才能拿到里面的值
+  const { id } = await prop.params;
+
+  /**
+   * SSR 阶段预加载第一页数据
+   *
+   * 数据会进入 React Query 缓存
+   */
+  const result = await getRecordSubById(id);
+
+  return (
+    /**
+     * 把服务端缓存“脱水”传给客户端
+     */
+
+    <ItemClient
+      title={title}
+      initialValues={{
+        item: result,
+        id,
+      }}
+      clientViewType="edit"
+    />
+  );
+}
+export default definePage(Page);
+
+export const metadata = {
+  title,
+};

@@ -1,0 +1,21 @@
+/**
+ * @ Author: zhanchao.wu
+ * @ Create Time: {{now}}
+ * @ Modified by: zhanchao.wu
+ * @ Modified time: 2026-08-13 14:13:03
+ * @ Description: {{title}}
+ */
+
+export const ItemQueryKey = {
+  /**
+   * 根 key
+   */
+  all: [' {{fileName}}/item'] as const,
+
+  /**
+   * 编辑加载
+   * @param id
+   * @returns
+   */
+  item: (id: string) => [...ItemQueryKey.all, id] as const,
+};

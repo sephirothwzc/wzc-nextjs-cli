@@ -1,5 +1,11 @@
-// @ts-nocheck
-/* eslint-disable */
+/**
+ * @ Author: zhanchao.wu
+ * @ Create Time: {{now}}
+ * @ Modified by: zhanchao.wu
+ * @ Modified time: {{now}}
+ * @ Description: {{title}}
+ */
+
 
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 
@@ -7,7 +13,7 @@ import envConfig from '@/config/env-config';
 import { Server{{objectName}}CondsPageResponse } from '@/contract/{{name}}/{{fileName}}.contract';
 import { definePage } from '@/lib/infra/page';
 import { createServerQueryClient } from '@/server/hydration/server-query-client';
-import { condsPage } from '@/server/service/eda/{{fileName}}.service';
+import { condsPage } from '@/server/service/{{name}}.service';
 import { Maybe } from '@/server/types/index.types';
 
 import {{objectName}}Client from './{{fileName}}.client';

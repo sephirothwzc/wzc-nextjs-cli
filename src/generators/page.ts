@@ -32,6 +32,11 @@ export type NameProp = {
 
   /** 目录层级 */
   pathParts: string[];
+
+  /**
+   * 当前时间
+   */
+  now: string;
 };
 
 /**
